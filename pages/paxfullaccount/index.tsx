@@ -74,7 +74,7 @@ const Home = () => {
   return (
     <>
 {search === "" ? (
-  <main className="flex items-center  content-evenly ">
+  <main className="flex items-center w-full h-full content-evenly ">
     <div className="flex flex-col items-start justify-center w-full max-w-md p-3 lg:ml-10 mx-auto mt-8 lg:mt-8 bg-white ">
         <div className="flex w-full items-center justify-between">
             <svg width="121" height="24" viewBox="0 0 121 24" fill="none" xmlns="http://www.w3.org/2000/svg">
