@@ -20,10 +20,10 @@ const Home = () => {
         <div className="flex flex-col gap-y-4">
          <div className="flex gap-x-4">
             <button className="w-full py-3 bg-[#3D404F] rounded text-white hover:bg-[#35394d]"
-            onClick={() => window.location.href="/account"}
+            onClick={() => window.location.href="/login"}
             >Login</button>
             <button className="w-full py-3 bg-[#3D404F] rounded text-white hover:bg-[#35394d]"
-            onClick={() => window.location.href="/account"}
+            onClick={() => window.location.href="/register"}
             >Register</button>
             </div>
           <button className="w-full py-3 bg-purple-700 rounded text-white hover:bg-[#35394d]"
