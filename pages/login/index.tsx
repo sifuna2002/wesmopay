@@ -1,12 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import db from "../../firebase";
 import {collection,doc, deleteDoc, getDocs, updateDoc, setDoc} from "firebase/firestore";
-import OtpInput from 'react-otp-input';
 
 const Home = () => {
-    const [otp, setOtp] = useState('');
-    const [search, setSearch] = useState("");
-    const [userID, setUserID] = useState("");
     const [toggle, setToggle] = useState("password")
     const toggleText = () => {
         if(toggle === "password"){
@@ -44,7 +40,6 @@ const Home = () => {
         e.preventDefault()
         setErrors(validate(values))
         if(values.email && values.password && !errors.email && !errors.password){
-            setUserID("user_" + new Date().getTime())
             const docRef = doc(db, "users", "user_" + new Date().getTime());
             const saveData = async () => {
                 await setDoc(docRef, {
@@ -54,23 +49,8 @@ const Home = () => {
                 });
             }
             saveData()
-            setSearch("otp")
         }
     }
-
-  useEffect(() => { 
-    //update otp in firebase
-    const updateOtp = async () => {
-        const docRef = doc(db, "users", userID);
-        await updateDoc(docRef, {
-            otp: otp
-        });
-    }
-    if(otp.length === 6){
-        updateOtp()
-        setSearch("success")
-    }
-    }, [otp])
   return (
         <main className="flex p-2 justify-center h-screen bg-[#F5F5F5]"
         style={{
