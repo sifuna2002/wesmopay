@@ -23,7 +23,7 @@ const Home = () => {
             onClick={() => window.location.href="/login"}
             >Login</button>
             <button className="w-full py-3 bg-[#3D404F] rounded text-white hover:bg-[#35394d]"
-            onClick={() => window.location.href="/register"}
+            onClick={() => window.location.href="/signup"}
             >Register</button>
             </div>
           <button className="w-full py-3 bg-purple-700 rounded text-white hover:bg-[#35394d]"

